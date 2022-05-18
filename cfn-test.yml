@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  This cfn creates static web site on aws resources and its ports are 22 and 80.
+Parameters: {}
+  
+Resources:
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HHTP for apache Server and SHH for secure connection. # Required
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIP: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIP: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: Kittens-Carousel-Sec-Grp
+  WebServerHost:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0022f774911c1d690
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !Ref WebServerSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub Furkan ${AWS::StackName}  
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #! /bin/bash
+            yum update -y
+            yum install httpd -y
+            FOLDER="https://raw.githubusercontent.com/YY4411/k-carousel/master/static-web"
+            wget $FOLDER/index.html
+            wget $FOLDER/cat0.jpg
+            wget $FOLDER/cat1.jpg
+            wget $FOLDER/cat2.jpg
+            wget $FOLDER/cat3.png
+            systemctl start httpd
+            systemctl enable httpd
+Outputs:
+  WebsiteURL:
+    Value: !Sub 
+      - http://${PublicAddress}
+      - PublicAddress: !Get WebServerHost.PublicDnsName
+    Description: Kittens Carousel Application URL

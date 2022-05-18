@@ -48,5 +48,5 @@ Outputs:
   WebsiteURL:
     Value: !Sub 
       - http://${PublicAddress}
-      - PublicAddress: !Get WebServerHost.PublicDnsName
+      - PublicAddress: !GetAtt WebServerHost.PublicDnsName
     Description: Kittens Carousel Application URL

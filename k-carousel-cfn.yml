@@ -7,7 +7,7 @@ Resources:
   WebServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Enable HTTP for Apache Web Server an SSH forsecure connection # Required
+      GroupDescription: Enable HTTP for Apache Web Server and SSH forsecure connection # Required
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
